@@ -40,6 +40,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.raywenderlich.android.gobuy.R
 import com.raywenderlich.android.gobuy.model.GroceryItem
 import com.raywenderlich.android.gobuy.viewmodel.GroceryListViewModel
+import java.lang.NumberFormatException
 
 class NewItemDialogFragment : DialogFragment() {
 
@@ -104,10 +105,14 @@ class NewItemDialogFragment : DialogFragment() {
 
     builder.setView(dialogView)
         .setPositiveButton(R.string.save_button) { _, _ ->
-          val priceString = itemPriceEditText?.text.toString()
-          val amountString = itemAmountEditText?.text.toString()
-          val priceQuantity = if (priceString.isNotBlank()) priceString.toDouble() else 0.00
-          val amountOfItems = if (amountString.isNotBlank()) amountString.toDouble() else 0.00
+          fun safeDoubleConversion(value: String): Double {
+            return when (val convertedValue = value.toDoubleOrNull()) {
+              null -> 0.0
+              else -> convertedValue
+            }
+          }
+          val priceQuantity = safeDoubleConversion(itemPriceEditText?.text.toString())
+          val amountOfItems = safeDoubleConversion(itemAmountEditText?.text.toString())
           val total: Double = priceQuantity * amountOfItems
 
           val item = GroceryItem(
