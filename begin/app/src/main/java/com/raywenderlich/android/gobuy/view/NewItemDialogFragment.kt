@@ -104,8 +104,10 @@ class NewItemDialogFragment : DialogFragment() {
 
     builder.setView(dialogView)
         .setPositiveButton(R.string.save_button) { _, _ ->
-          val priceQuantity = itemPriceEditText?.text.toString().toDouble()
-          val amountOfItems = itemAmountEditText?.text.toString().toDouble()
+          val priceString = itemPriceEditText?.text.toString()
+          val amountString = itemAmountEditText?.text.toString()
+          val priceQuantity = if (priceString.isNotBlank()) priceString.toDouble() else 0.00
+          val amountOfItems = if (amountString.isNotBlank()) amountString.toDouble() else 0.00
           val total: Double = priceQuantity * amountOfItems
 
           val item = GroceryItem(
